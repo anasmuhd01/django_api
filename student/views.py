@@ -90,3 +90,18 @@ class AssignmentSpecificView(APIView):
         id = kwargs.get('pk')
         Assignment.objects.get(id=id).delete()
         return Response(data={'msg':"deleted"})
+    
+    def put(self,req,**kwargs):
+        id = kwargs.get('pk')
+        assignment = Assignment.objects.get(id=id)
+        desr = AssignmentSerializer(data=req.data)
+        if desr.is_valid():
+            title = desr.validated_data.get('title')
+            desc = desr.validated_data.get('description')
+            sub_date = desr.validated_data.get('submission_date')
+            assignment.title = title
+            assignment.description = desc
+            assignment.submission_date = sub_date
+            assignment.save()
+            return Response(data={'msg':'updated'})
+        return Response(data=desr.errors)

@@ -64,7 +64,7 @@ class StudentEditView(APIView):
 
 
 class AssignmentView(APIView):
-    def get(self,req):
+    def post(self,req):
         desr = AssignmentSerializer(data=req.data)
         if desr.is_valid():
             title = desr.validated_data.get('title')
@@ -78,3 +78,15 @@ class AssignmentView(APIView):
         data = Assignment.objects.all()
         ser = AssignmentSerializer(data,many=True)
         return Response(data=ser.data)
+    
+class AssignmentSpecificView(APIView):
+    def get(self,req,**kwargs):
+        id = kwargs.get('pk')
+        data= Assignment.objects.get(id=id)
+        ser = AssignmentSerializer(data)
+        return Response(data=ser.data)
+    
+    def delete(self,req,**kwargs):
+        id = kwargs.get('pk')
+        Assignment.objects.get(id=id).delete()
+        return Response(data={'msg':"deleted"})

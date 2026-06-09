@@ -26,4 +26,5 @@ urlpatterns = [
     path('student',StudentApiView.as_view()),
     path('student/<int:id>',StudentEditView.as_view()),
     path('assignment',AssignmentView.as_view()),
+    path('assignment/<int:pk>',AssignmentSpecificView.as_view())
 ]

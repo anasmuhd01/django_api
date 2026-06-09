@@ -73,3 +73,8 @@ class AssignmentView(APIView):
             Assignment.objects.create(title = title, description = desc, submission_date= sub_date)
             return Response(data={'msg':'Data Added'})
         return Response(data={'msg':desr.errors},status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self,req):
+        data = Assignment.objects.all()
+        ser = AssignmentSerializer(data,many=True)
+        return Response(data=ser.data)

@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
+from student.models import Assignment
+from student.serializers import AssignmentSerializer
+from rest_framework import status
  
 # Create your views here.
 
@@ -62,4 +65,11 @@ class StudentEditView(APIView):
 
 class AssignmentView(APIView):
     def get(self,req):
-        return Response(data={'data':'PUT msg'})
+        desr = AssignmentSerializer(data=req.data)
+        if desr.is_valid():
+            title = desr.validated_data.get('title')
+            desc = desr.validated_data.get('description')
+            sub_date = desr.validated_data.get('submission_date')
+            Assignment.objects.create(title = title, description = desc, submission_date= sub_date)
+            return Response(data={'msg':'Data Added'})
+        return Response(data={'msg':desr.errors},status=status.HTTP_400_BAD_REQUEST)

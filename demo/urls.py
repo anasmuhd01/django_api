@@ -28,4 +28,5 @@ urlpatterns = [
     path('assignment',AssignmentView.as_view()),
     path('assignment/<int:pk>',AssignmentSpecificView.as_view()),
     path('todo',TodoView.as_view()),
+    path('todo/<int:id>',TodoEditView.as_view()),
 ]

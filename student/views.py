@@ -120,4 +120,17 @@ class TodoView(APIView):
             return Response(data={'msg':'data created'})
         return Response(data=desr.errors)
     
+    def get(self,req):
+        data=Todo.objects.all()
+        ser=TodoSerializer(data,many=True)
+        print(ser.data)
+        return Response(ser.data)
+    
+class TodoEditView(APIView):
+    def delete(self,req,**kwargs):
+        id = kwargs.get('id')
+        Todo.objects.get(id=id).delete()
+        return Response(data={'msg':'deleted'})
+    
+    
     

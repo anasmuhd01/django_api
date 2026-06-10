@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from student.models import Assignment
-from student.serializers import AssignmentSerializer
+from student.models import Assignment,Todo
+from student.serializers import AssignmentSerializer,TodoSerializer
 from rest_framework import status
  
 # Create your views here.
@@ -105,3 +105,19 @@ class AssignmentSpecificView(APIView):
             assignment.save()
             return Response(data={'msg':'updated'})
         return Response(data=desr.errors)
+    
+class TodoView(APIView):
+    def post(self,req):
+        desr = TodoSerializer(data=req.data)
+        # print(desr)
+        # to check data without validation
+        # print(desr.initial_data.get("title"))
+        if desr.is_valid():  
+            title = desr.validated_data.get('title')
+            desc = desr.validated_data.get('description')
+            sub = desr.validated_data.get('subject')
+            Todo.objects.create(title= title,description = desc, subject = sub)
+            return Response(data={'msg':'data created'})
+        return Response(data=desr.errors)
+    
+    

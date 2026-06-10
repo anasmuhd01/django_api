@@ -133,4 +133,13 @@ class TodoEditView(APIView):
         return Response(data={'msg':'deleted'})
     
     
-    
+    def put(self,req,**kwargs):
+        id = kwargs.get('id')
+        desr = TodoSerializer(data =req.data)
+        todo = Todo.objects.get(id=id)
+        if desr.is_valid():
+            todo.title = desr.validated_data.get('title')
+            todo.description = desr.validated_data.get('description')
+            todo.subject = desr.validated_data.get('subject')
+            todo.save()
+            return Response(data={'msg':'updated'})

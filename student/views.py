@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from student.models import Assignment,Todo
-from student.serializers import AssignmentSerializer,TodoSerializer
+from student.serializers import AssignmentSerializer,TodoSerializer,TodoModelSerializer
 from rest_framework import status
  
 # Create your views here.
@@ -106,27 +106,27 @@ class AssignmentSpecificView(APIView):
             return Response(data={'msg':'updated'})
         return Response(data=desr.errors)
     
-class TodoView(APIView):
-    def post(self,req):
-        desr = TodoSerializer(data=req.data)
-        # print(desr)
-        # to check data without validation
-        # print(desr.initial_data.get("title"))
-        if desr.is_valid():  
-            title = desr.validated_data.get('title')
-            desc = desr.validated_data.get('description')
-            sub = desr.validated_data.get('subject')
-            Todo.objects.create(title= title,description = desc, subject = sub)
-            return Response(data={'msg':'data created'})
-        return Response(data=desr.errors)
+# class TodoView(APIView):
+#     def post(self,req):
+#         desr = TodoSerializer(data=req.data)
+#         # print(desr)
+#         # to check data without validation
+#         # print(desr.initial_data.get("title"))
+#         if desr.is_valid():  
+#             title = desr.validated_data.get('title')
+#             desc = desr.validated_data.get('description')
+#             sub = desr.validated_data.get('subject')
+#             Todo.objects.create(title= title,description = desc, subject = sub)
+#             return Response(data={'msg':'data created'})
+#         return Response(data=desr.errors)
     
-    def get(self,req):
-        data=Todo.objects.all()
-        ser=TodoSerializer(data,many=True)
-        print(ser.data)
-        return Response(ser.data)
+#     def get(self,req):
+#         data=Todo.objects.all()
+#         ser=TodoSerializer(data,many=True)
+#         print(ser.data)
+#         return Response(ser.data)
     
-class TodoEditView(APIView):
+# class TodoEditView(APIView):
     def delete(self,req,**kwargs):
         id = kwargs.get('id')
         Todo.objects.get(id=id).delete()
@@ -143,3 +143,38 @@ class TodoEditView(APIView):
             todo.subject = desr.validated_data.get('subject')
             todo.save()
             return Response(data={'msg':'updated'})
+    
+    
+class TodoMSView(APIView):
+    def get(self,req):
+        qsr = Todo.objects.all()
+        ser = TodoModelSerializer(qsr,many=True)
+        return Response(data=ser.data)
+    
+    def post(self,req):
+        desr = TodoModelSerializer(data=req.data)
+        if desr.is_valid():
+            desr.save()
+            return Response(data=desr.data)
+        return Response(data=desr.errors)
+
+class TodoMSEditView(APIView):
+    def get(self,req,**kwargs):
+        todos = Todo.objects.get(id=kwargs.get('id'))
+        ser = TodoModelSerializer(todos)
+        # if todos.pk in
+        return Response(data=ser.data)
+        # return Response(data={'msg':'id not found'})
+
+    def delete(self,req,**kwargs):
+        id= kwargs.get('id')
+        Todo.objects.get(id=id).delete()
+        return Response(data={'msg':'deleted'})
+
+    def put(self,req,**kwargs):
+        todo = Todo.objects.get(id=kwargs.get('id'))
+        desr = TodoModelSerializer(todo,data=req.data)
+        if desr.is_valid():
+            desr.save()
+            return Response(data=desr.data)
+        return Response(data=desr.errors)

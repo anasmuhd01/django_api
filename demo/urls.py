@@ -17,6 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from student.views import *
+from rest_framework.routers import DefaultRouter
+
+routes = DefaultRouter()
+routes.register('teacherVS',TeacherViewset,basename="teach")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,4 +37,4 @@ urlpatterns = [
     path('todoMS/<int:id>',TodoMSEditView.as_view()),
     path('teacher',TeacherView.as_view()),
     
-]
+] + routes.urls

@@ -2,10 +2,11 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from student.models import Assignment,Todo
-from student.serializers import AssignmentSerializer,TodoSerializer,TodoModelSerializer
+from student.models import *
+from student.serializers import *
 from rest_framework import status
- 
+from rest_framework.parsers import MultiPartParser,FormParser
+from rest_framework.viewsets import ViewSet
 # Create your views here.
 
 students = [
@@ -178,3 +179,55 @@ class TodoMSEditView(APIView):
             desr.save()
             return Response(data=desr.data)
         return Response(data=desr.errors)
+    
+class TeacherView(APIView):
+
+    parser_classes=[FormParser,MultiPartParser]
+
+    def get(self,req):
+        teachers=Teacher.objects.all()
+        ser=TeachreSerializer(teachers,many=True)
+        return Response(data=ser.data)
+    
+    def post(self,req):
+        desr = TeachreSerializer(data=req.data)
+        if desr.is_valid():
+            desr.save()
+            return Response(data=desr.data)
+        return Response(data=desr.errors)
+    
+class TeacherViewset(ViewSet):
+    
+    def list(self, request):
+
+        teacher = Teacher.objects.all()
+        ser = TeachreSerializer(teacher,many=True)
+        return Response(data=ser.data)
+
+    def create(self, request):
+
+        desr = TeachreSerializer(data=request.data)
+        if desr.is_valid():
+            desr.save()
+            return Response(data=desr.data)
+        return Response(data=desr.errors)
+
+    def retrieve(self, request, pk=None):
+
+        teacher = Teacher.objects.get(id=pk)
+        ser = TeachreSerializer(teacher)
+        return Response(data=ser.data)
+
+    def update(self, request, pk=None):
+        teacher = Teacher.objects.get(id=pk)
+        desr = TeachreSerializer(teacher,data=request.data)
+        if desr.is_valid():
+            desr.save()
+            return Response(data=desr.data)
+        return Response(data=desr.errors)
+        
+        
+    def destroy(self, request, pk=None):
+        teacher = Teacher.objects.get(id=pk).delete()
+        return Response(data={'msg':'deleted'})
+    

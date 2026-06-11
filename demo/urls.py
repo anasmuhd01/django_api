@@ -31,5 +31,6 @@ urlpatterns = [
     # path('todo/<int:id>',TodoEditView.as_view()),
     path('todoMS',TodoMSView.as_view()),
     path('todoMS/<int:id>',TodoMSEditView.as_view()),
+    path('teacher',TeacherView.as_view()),
     
 ]

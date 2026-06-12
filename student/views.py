@@ -201,6 +201,9 @@ class TeacherViewset(ViewSet):
     def list(self, request):
 
         teacher = Teacher.objects.all()
+        print(request.query_params)
+        if 'department' in request.query_params:
+            teacher = teacher.filter(department= request.query_params.get('department'))
         ser = TeachreSerializer(teacher,many=True)
         return Response(data=ser.data)
 

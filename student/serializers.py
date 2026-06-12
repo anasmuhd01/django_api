@@ -24,3 +24,10 @@ class TeachreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = "__all__"
+
+    def validate(self, attrs):
+        print(attrs)
+        age = attrs.get('age')
+        if age<18:
+            raise serializers.ValidationError("Age Must Be greater Than 18")
+        return super().validate(attrs)
